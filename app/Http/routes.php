@@ -11,6 +11,23 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::auth();
+Route::get('/', 'HomeController@index');
+Route::get('/home', 'HomeController@index');
+
+Route::group(['prefix' => 'admin'], function (){
+    Route::get('/', 'Admin\DashboardController@index');
+    Route::get('/users', 'Admin\UserController@index');
+    Route::get('/article', 'Admin\ArticleController@index');
 });
+
+Route::group(['middleware'=>['auth']], function (){
+    Route::resource('admin/article', 'Admin\ArticleController', ['except'=>['show']]);
+});
+
+Route::group(['middleware'=>['auth']], function (){
+    Route::resource('admin/users', 'Admin\UserController', ['except'=>['show']]);
+});
+
+
